@@ -1,0 +1,28 @@
+
+// idx    Índice del tipo de semáforo. Mayor que 0 y menor que nav::sem::MAX.
+// total  Tiempo total de ciclo o período (segundos).
+// green  Tiempo de duración en estado verde (segundos).
+// phase  Tiempo de fase para alternar estados (segundos).
+
+
+//  idx total green phase
+
+	 // rotonda izquierda
+     11    30    10     0	// vehiculos
+     12    30    10    15	// vehiculos
+     21    30    10     0	// peatones
+     22    30    10    15	// peatones
+
+	 // rotonda derecha
+     13    30    10     0	// vehiculos
+     14    30    10    15	// vehiculos
+     23    30    10     0	// peatones
+     24    30    10    15	// peatones
+
+	 // otros
+     15    30    10     0	// vehiculos
+     16    30    10    15	// vehiculos
+     25    30    10    15	// peatones
+     26    30    10     0	// peatones
+
+
