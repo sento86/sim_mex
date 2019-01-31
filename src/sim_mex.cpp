@@ -10,10 +10,12 @@
 
 sim_mex::sim_mex()
 {
+    Initialize();
 }
 
 sim_mex::~sim_mex()
-{
+{    
+ 	Finalize();
 }
 
 void sim_mex::Initialize( void )  //####FIXME: hardcoded stuff
@@ -174,11 +176,7 @@ bool sim_mex::GetOutputs( void )
 
 void sim_mex::Run( float steer, float accel, float brake, float handbrake, float time, float rate )
 {
- 	Initialize();
-    
  	Loop(steer, accel, brake, handbrake, time, rate);
-    
- 	Finalize();
 }
 
 int main( int argc, char **argv )
@@ -198,12 +196,3 @@ int main( int argc, char **argv )
     
 	return 0;
 }
-
-/*phys::LoadGroundMeshBig: file '/home/idf/ros/magv_simulator/magv/simulator/data/empty.obj'
-phys::LoadGroundMeshBig: num vertexes : 8
-phys::LoadGroundMeshBig: num triangles: 12
-DEBUG: [DEBUG_WARNING]  line=249, file='./../../PhysXCooking/src/InternalTriangleMeshBuilder.cpp'
-DEBUG:   TriangleMesh: triangles are too big, reduce their size to increase simulation stability!
-DEBUG: [DEBUG_WARNING]  line=366, file='./../../PhysX/src/NpScene.cpp'
-DEBUG:   PxScene::addActor(): Static actor with no shapes added to scene
-INFO: phys::geom::LoadGeoms: Loading file 'chassis5.colli'*/

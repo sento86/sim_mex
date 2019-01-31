@@ -102,7 +102,7 @@ void sim::Initialize( const sim::Config &config )
 	//####BUS
 	db::veh::Initialize();
 	//db::veh::LoadFile( "/home/idf/ros/magv_simulator/vehicles/resources/spreadsheet.xlsx" );
-	db::veh::LoadFile( "/home/idf/ros/magv_simulator/magv/sim_mex/src/resources/spreadsheet.xlsx" );
+	db::veh::LoadFile( "/home/idf/ros/magv_simulator/magv/sim_mex/src/shared/resources/spreadsheet.xlsx" );
 		
 	//####BUS START @@@@
 //	bus.px = 20.0f;

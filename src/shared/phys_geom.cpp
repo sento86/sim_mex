@@ -492,12 +492,12 @@ static void ReadGeomMeshes( FILE *file, const bool swap_endian, const int offset
 
 const phys::geom::Geoms * phys::geom::LoadGeoms( const char *filename, phys::GeomsCallbacks *callbacks )
 {
-//	print::Info( "phys::geom::LoadGeoms: Loading file '%s'\n", filename );
+	print::Info( "phys::geom::LoadGeoms: Loading file '%s'\n", filename );
 	
 	FILE *file = fopen( filename, "rb" );
 if( !file ) {	//####TEMP
 	//char buff[256] = "/home/idf/ros/magv_simulator/vehicles/resources/";
-	char buff[256] = "/home/idf/ros/magv_simulator/magv/sim_mex/src/resources/";
+	char buff[256] = "/home/idf/ros/magv_simulator/magv/sim_mex/src/shared/resources/";
 	file = fopen( strcat(buff,filename), "rb" );
 }
 	if( !file ) print::Error( "phys::geom::LoadGeoms: Can not open file '%s'", filename );

@@ -68,8 +68,8 @@ class ErrorCallback : public PxErrorCallback
 			if( code &  PxErrorCode::eABORT             ) strcat( label, "[ABORT]"             );
 			if( code &  PxErrorCode::ePERF_WARNING      ) strcat( label, "[PERF_WARNING]"      );
 
-//			print::Debug( "%s  line=%d, file='%s'\n", label, line, file );			
-//			print::Debug( "  %s\n", message );
+			print::Debug( "%s  line=%d, file='%s'\n", label, line, file );			
+			print::Debug( "  %s\n", message );
 
 			if( code < 0 || code > PxErrorCode::eDEBUG_WARNING )
 				print::Error( "ErrorCallback: PysX error." );
@@ -316,9 +316,9 @@ void phys::LoadGroundMeshBig( const char *filename )
 
 	if( strstr( filename, ".obj" ) ) LoadMeshOBJ( filename, indxs, verts );
 	if( !indxs.size() && !verts.size() ) print::Error( "phys::LoadGroundMeshBig: Unsupported file foramat (file extension)." );
-//	printf( "phys::LoadGroundMeshBig: file '%s'\n", filename );
-//	printf( "phys::LoadGroundMeshBig: num vertexes : %d\n", (int)verts.size()/1 );
-//	printf( "phys::LoadGroundMeshBig: num triangles: %d\n", (int)indxs.size()/3 );
+	printf( "phys::LoadGroundMeshBig: file '%s'\n", filename );
+	printf( "phys::LoadGroundMeshBig: num vertexes : %d\n", (int)verts.size()/1 );
+	printf( "phys::LoadGroundMeshBig: num triangles: %d\n", (int)indxs.size()/3 );
 
 	PxTriangleMeshDesc mesh_desc;
 	mesh_desc.points.count		= verts.size() / 1;
