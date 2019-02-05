@@ -50,8 +50,10 @@ void sim_mex::Sleep( float dt )
     usleep(dt*1000000);
 }
 
-void sim_mex::Loop( float steer, float accel, float brake, float handbrake, float time, float rate )
+std::vector <std::vector<double> > sim_mex::Loop( std::vector <std::vector<double> > inputs)
 {
+	std::vector <std::vector<double> > outputs;
+	std::vector<double> speed;
     std::cout << "Loop" << std::endl;
    
  	double dt, time_old, time_a, time_b, time_c, time_d, time_e;
@@ -59,14 +61,14 @@ void sim_mex::Loop( float steer, float accel, float brake, float handbrake, floa
  	
  	time_old = GetTime();
     
-    int i_max = ceil(time*rate);
+    int i_max = ceil(inputs[4][0]*inputs[5][0]-1);
  	
  	for(int i = 0; i <= i_max; i++)
     {
  		time_a = GetTime();
  
  		//####FIXME: choose fixed or variable frametime
- 		dt = 1/rate;		            // fixed frame time
+ 		dt = 1/inputs[5][0];		            // fixed frame time
  		//dt = ( time_a - time_old );	// variable frame time
  		if( dt < 0.0 ) dt = 0.0;
  		time_old = time_a;
@@ -81,8 +83,13 @@ void sim_mex::Loop( float steer, float accel, float brake, float handbrake, floa
  		
  		time_c = GetTime();
  
- 		ok = SetInputs( steer, accel, brake, handbrake );
+ 		ok = SetInputs( inputs[0][i], inputs[1][i], inputs[2][i], inputs[3][i] );
  		if( !ok ) break;
+		speed.push_back(twist_linear.x);
+ 		std::cout << "v=" << twist_linear.x << "m/s, " << std::endl;
+		std::cout << "accel=" << inputs[1][i] << std::endl;
+		std::cout << "brake=" << inputs[2][i] << std::endl;
+		std::cout << "i=" << i << std::endl;
  		
  		time_d = GetTime();
  
@@ -115,6 +122,8 @@ void sim_mex::Loop( float steer, float accel, float brake, float handbrake, floa
             }
  		}
  	}
+	outputs.push_back(speed);
+	return outputs;
  }
 
 bool sim_mex::SetInputs( float steer_value, float accel_value, float brake_value, float handbrake_value )
@@ -174,9 +183,15 @@ bool sim_mex::GetOutputs( void )
 	return true;
 }
 
-void sim_mex::Run( float steer, float accel, float brake, float handbrake, float time, float rate )
+std::vector <std::vector<double> > sim_mex::Run( std::vector <std::vector<double> > inputs  )
 {
- 	Loop(steer, accel, brake, handbrake, time, rate);
+	std::vector <std::vector<double> > outputs;
+ 	Initialize();
+    
+ 	outputs=Loop(inputs);
+    
+ 	Finalize();
+	return outputs;
 }
 
 int main( int argc, char **argv )
@@ -188,11 +203,32 @@ int main( int argc, char **argv )
     float time = 10.0f;
     float rate = 100.0f;
 
-//    sim_mex *p = new sim_mex();
-//    p->Run(steer, accel, brake, handbrake, time, rate);
-//    delete p;
+	std::vector<double> time(1,10);
+	//time.push_back(6);
+	std::vector<double> rate(1,100);
+	//rate.push_back(1);
+	double total = time[0]*rate[0];
+	//$(IntermediateDirectory)/lib$(ProjectName)
+	
+	std::vector<double> halfzeros(total/2,0);
+	std::vector<double> halfones(total/2,1);
+	
+	std::vector<double> steer(total,0);
+	//steer.push_back(0); steer.push_back(0); steer.push_back(0);steer.push_back(0);steer.push_back(0);steer.push_back(0);
+	//std::vector<double> accel(total,1);
+	std::vector<double> accel(halfones);
+	accel.insert(accel.end(), halfzeros.begin(), halfzeros.end());
+	//accel.push_back(1.0); accel.push_back(1.0); accel.push_back(1.0);accel.push_back(0);accel.push_back(0);accel.push_back(0);
+	std::vector<double> brake(total,0);
+	//brake.push_back(0); brake.push_back(0); brake.push_back(1.0);brake.push_back(1.0);brake.push_back(1.0);brake.push_back(1.0);
+	std::vector<double> handbrake(total,0);
+	//handbrake.push_back(0); handbrake.push_back(0); handbrake.push_back(0);handbrake.push_back(0);handbrake.push_back(0);handbrake.push_back(0);
+
+	std::vector< std::vector<double> > inputs;
+	inputs.push_back(steer);inputs.push_back(accel);inputs.push_back(brake);inputs.push_back(handbrake);inputs.push_back(time);inputs.push_back(rate);
+
     sim_mex p;
-    p.Run(steer, accel, brake, handbrake, time, rate);
+    p.Run(inputs);
     
 	return 0;
 }

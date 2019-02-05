@@ -5,7 +5,7 @@
 **  EMAIL: vgirbes@idf.upv.es
 **  URL: www.upv.es
 */
-
+#include <vector>
 #include "sim_mex.h"
 
 #include "mex.h"
@@ -22,13 +22,20 @@ void FinalizeFcn( ){
     p = NULL;
 }
 
-void MainFcn( float steer, float accel, float brake, float handbrake, float time, float rate ){
-    
+std::vector <std::vector<double> >  MainFcn( std::vector <std::vector<double> > inputs ){
+    std::vector <std::vector<double> > outputs;
     //sim_mex *p = new sim_mex();
     //p->Run(steer, accel, brake, handbrake, time, rate);
     //delete p;
     //p.Run(steer, accel, brake, handbrake, time, rate);
-    p->Run(steer, accel, brake, handbrake, time, rate);
+    outputs=p->Run(inputs);
+	return outputs;
+}
+
+mxArray * getMexArray(const std::vector<double>& v){
+    mxArray * mx = mxCreateDoubleMatrix(1,v.size(), mxREAL);
+    std::copy(v.begin(), v.end(), mxGetPr(mx));
+    return mx;
 }
 
 /* The gateway function. */ 
@@ -55,23 +62,30 @@ void mexFunction(int nlhs, mxArray* plhs[],
         }
     }
     
-    /* Acquire pointers to the input data */
-    double* steer = mxGetPr(prhs[0]);
-    double* accel = mxGetPr(prhs[1]);
-    double* brake = mxGetPr(prhs[2]);
-    double* handbrake = mxGetPr(prhs[3]);
-    double* time  = mxGetPr(prhs[4]);
-    double* rate  = mxGetPr(prhs[5]);
+	std::vector< std::vector<double> > inputs;
+	for( int i = 0; i < nrhs; i++ ) {
+		double *ptr = mxGetPr(prhs[i]);
+		mwSize n = mxGetNumberOfElements(prhs[i]);
+		std::vector<double> t( ptr, ptr+n );
+		inputs.push_back( t );
+	}
+	
+	mwSize n = mxGetNumberOfElements(prhs[0]);
+	std::vector <std::vector<double> > outputs;
+	plhs[0] = mxCreateDoubleMatrix((mwSize)1,(mwSize)n,mxREAL);
+	std::vector<double> speed;
     double* mode  = mxGetPr(prhs[6]);
-
-    if(*mode==1.0)
+	
+    if(*mode==1.0){
         InitializeFcn();
-    else if(*mode==0.0)
-        MainFcn(*steer, *accel, *brake, *handbrake, *time, *rate);
-    else if(*mode==-1.0)
+    }else if(*mode==0.0){
+        outputs=MainFcn(inputs);
+		speed = outputs[0];
+		plhs[0] = getMexArray(speed);
+	}else if(*mode==-1.0){
         FinalizeFcn();
-    else
+    }else{
         std::cout << "Wrong mode!" << std::endl;
-
+	}
 }
 

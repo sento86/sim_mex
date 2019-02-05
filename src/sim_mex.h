@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <vector>
 
 #include "sim.hpp"
 //#include "vis.hpp"
@@ -33,8 +34,8 @@ public:
     void Initialize( void );
     void Finalize( void );
     void Sleep( float );
-    void Loop( float steer, float accel, float brake, float handbrake, float time = 5.0f, float rate = 100.0f );
-    void Run( float steer, float accel, float brake, float handbrake, float time = 5.0f, float rate = 100.0f );
+    std::vector <std::vector<double> > Loop( std::vector <std::vector<double> > inputs );
+    std::vector <std::vector<double> > Run( std::vector <std::vector<double> > inputs );
     bool GetOutputs( void );
     bool SetInputs( float steer_value, float accel_value, float brake_value, float handbrake );
     
